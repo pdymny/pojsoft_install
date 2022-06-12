@@ -1,0 +1,141 @@
+{% extends 'admin/layout_login.html.twig' %}
+
+{% block page_title 'Pulpit' %}
+
+{% block body_id 'welcome' %}
+
+{% block content_title 'Pulpit' %}
+
+{% block main %}
+          
+<form id="save-settings" class=" new-form" action="{{ path('passwordSave') }}" method="post">
+
+    <div class="row">
+        <div class="field-group col-6">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Dane dotyczące pakietu, którego używasz.">
+                    <i class="fa fa-fw fa-id-card"></i>
+                    Aktualny pakiet 
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table class="table datagrid">
+                            <tr>
+                                <th>Pakiet</th>
+                                <td>{{ pack['name'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Termin ważności</th>
+                                <td>{{ pack['deadline'] }}</td>
+                            </tr>
+                            <tr>
+                                <th>Ilość kont</th>
+                                <td>
+                                {% if pack['acounts'] == 0 %}
+                                    Nielimitowany
+                                {% else %}
+                                    {{ pack['acounts'] }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ilość pojazdów</th>
+                                <td>
+                                {% if pack['vehicles'] == 0 %}
+                                    Nielimitowany
+                                {% else %}
+                                    {{ pack['vehicles'] }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ilość kierowców</th>
+                                <td>
+                                {% if pack['drivers'] == 0 %}
+                                    Nielimitowany
+                                {% else %}
+                                    {{ pack['drivers'] }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ilość powiadomień</th>
+                                <td>
+                                {% if pack['division'] == 0 %}
+                                    Nielimitowany
+                                {% else %}
+                                    {{ pack['division'] }}
+                                {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="field-group col-6 ">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Zmień hasło do tego konta.">
+                    <i class="fa fa-fw fa-key"></i>
+                    Zmień hasło
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+                    
+                        <div class="form-group">
+                            <input type="password" id="inputPasswordOld" name="password_old" class="form-control" placeholder='Stare hasło' data-toggle="tooltip" data-placement="left" title="Wpisz hasło, które było używane do tej pory." />
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="inputPasswordNew" name="password_new" class="form-control" placeholder='Nowe hasło' data-toggle="tooltip" data-placement="left" title="Wpisz nowe hasło, które chcesz używać."/>
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <button type="submit" class="btn btn-primary action-save float-right" data-toggle="tooltip" data-placement="left" title="Kliknij i zapisz zmiany.">
+                            <span class="btn-label">Zapisz zmiany</span>
+                        </button>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div> 
+    <div class="row">
+        <div class="field-group col-12 ">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Wyświetla ostatnie 30 akcji.">
+                    <i class="fa fa-fw fa-history"></i>
+                    Ostatnie akcje
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+                    
+                        <table class="table datagrid">
+                            <tr>
+                                <th>Data aktywności</th>
+                                <th>IP</th>
+                                <th>Konto</th>
+                                <th>Wydarzenie</th>    
+                            </tr>
+                        {% for note in notify %}
+                            <tr>
+                                <td>{{ note.date|date("d-m-Y H:i:s") }}</td>
+                                <td>{{ note.ip }}</td>
+                                <td>{{ note.getUser.username }}</td>
+                                <td>{{ note.text }}</td>
+                            </tr>
+                        {% endfor %}
+                        </table>
+                    </div>
+                </div>
+                <span class="d-inline-block float-right" tabindex="0" data-toggle="tooltip" title="Kliknij, aby otrzymać więcej wiadomości o powiadomieniach.">
+                    <a class="btn btn-primary float-right mt-1" title="" href="{{ path('easyadmin', { entity:'UserNotify', action:'list' }) }}" target="_self">Wszystkie akcje</a> 
+                </span>
+            </fieldset>
+        </div>
+    </div>   
+</form>
+{% endblock %}

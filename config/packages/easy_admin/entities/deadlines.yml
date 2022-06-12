@@ -1,0 +1,33 @@
+easy_admin:
+    entities:
+        Deadlines:
+            class: App\Entity\Vehicles
+            controller: App\Controller\AdminController
+            list:
+              title: 'Terminy'
+              actions:
+                - { name: '-new' }
+                - { name: '-delete' }
+                - { name: '-show' }
+              fields: ['id', { property: 'name', label: 'Nazwa' }, { property: 'registration', label: 'Numer <br/> rejestracyjny' }, { property: 'date_overview', label: 'Termin <br/> przeglądu' }, { property: 'date_insurance', label: 'Termin <br/> ubezpieczenia' }, { property: 'date_oil', label: 'Termin <br/> wymiany <br/> oleju' }, { property: 'date_warranty', label: 'Termin <br/> gwarancji' }, { property: 'date_udt', label: 'Termin <br/> UDT' }, { property: 'date_mechanic', label: 'Termin <br/> wizyty <br/> u mechanika' }, { property: 'date_documents', label: 'Termin <br/> ważności <br/> dokumentów' } ]
+            form:
+              title: 'Edytuj pojazd (#%%entity_id%%)'
+              fields: 
+                    - { type: 'group', label: 'Dane pojazdu', icon: 'car', columns: '6' }
+                    - { property: 'name', label: 'Nazwa' }
+                    - { property: 'registration', label: 'Numer rejestracyjny' }
+                    - { property: 'vin', label: 'VIN pojazdu' }
+                    - { property: 'first_registration', label: 'Pierwsza rejestracja' }
+                    - { property: 'type', label: 'Typ pojazdu', type_options: { block_name: 'type_select' } }
+                    - { type: 'group', label: 'Ważne terminy', icon: 'calendar', columns: '6' }
+                    - { property: 'date_overview', label: 'Termin przeglądu' }
+                    - { property: 'date_insurance', label: 'Termin ubezpieczenia' }
+                    - { property: 'date_oil', label: 'Termin wymiany oleju' }
+                    - { property: 'date_warranty', label: 'Termin gwarancji' }
+                    - { property: 'date_udt', label: 'Termin UDT' }
+                    - { property: 'date_mechanic', label: 'Termin wizyty u mechanika' }
+                    - { property: 'date_documents', label: 'Termin ważności dokumentów' }
+                    - { type: 'group', label: 'Notatnik', icon: 'sticky-note-o', columns: '12' }
+                    - { property: 'description', type: 'text_editor', label: 'Miejsce na opis lub natatki jeśli potrzeba.' }
+                    - { type: 'group', label: 'Załączniki', icon: 'file-o', columns: '12' }
+                    - { property: 'attachments', label: 'Miejsce na załączniki.', type: 'collection', type_options: {entry_type: 'App\Form\VehiclesAttachmentType', by_reference: false } }

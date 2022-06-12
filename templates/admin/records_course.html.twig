@@ -1,0 +1,429 @@
+{% if entity.getVat() == 1 %}
+<span class="d-inline-block float-right" tabindex="0" data-placement="left" data-toggle="tooltip" title="Kliknij, aby otworzyć formularz z możliwością edycji tabelki VAT.">
+    <button data-toggle="modal" data-target="#openVatForm" class="btn btn-primary btn-lg float-right" style="margin-top:-13px;">
+        Otwórz tabelkę ewidencji VAT
+    </button>
+</span>
+{% endif %}
+<h6>Ewidencja przebiegu pojazdu</h6>
+<hr>
+{% if entity.getVehicle().type == 4 %}
+<div class="alert alert-danger" role="alert">
+    Samochód ciężarowy nie musi posiadać ewidencji przebiegu. (Brak stawki za przejechany kilometr.)
+</div>
+{% endif %}
+{% if entity.getVehicle().type == 7 %}
+<div class="alert alert-danger" role="alert">
+    Samochód elektryczny nie musi posiadać ewidencji przebiegu. (Brak stawki za przejechany kilometr.)
+</div>
+{% endif %}
+<section id="main" class="content-body">
+    <table class="table datagrid" id="coursesList">
+        <thead>
+            <tr>
+                <th class="text-center pt-4 pb-3">Lp.</th>
+                <th class="text-center pt-4 pb-3">Data wyjazdu</th>
+                <th class="text-left pt-4 pb-3">Opis trasy</th>
+                <th class="text-left pt-4 pb-3">Cel wyjazdu</th>
+                <th class="text-right pt-4 pb-3">Km</th>
+                <th class="text-right pt-4 pb-3">Stawka</th>
+                <th class="text-right pt-4 pb-3">Wartość</th>
+                <th class="text-right pt-4 pb-3">Stan licznika</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set sum_km = 0 %}
+            {% set sum_value = 0 %}
+            {% set end_counter = entity.getVehicle().course %}
+            {% for course in entity.getCourses() %}
+                {% set sum_km = sum_km + course.km %}
+                {% set sum_value = sum_value + course.value %}
+                {% set end_counter = course.counter %}
+                {% include 'admin/table/records_course.html.twig' with {'lp': loop.index, 'course': course} %}
+            {% endfor %}
+        </tbody>
+        <tfoot style="border-top:1px solid rgba(0,0,0,.1);">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right"><b>Razem</b></td>
+                <td class="text-right"><div id="course_sum_km">{{ sum_km|number_format() }}</div></td>
+                <td></td>
+                <td class="text-right"><div id="course_sum_value">{{ sum_value|number_format(2) }}</div></td>
+                <td id="end_counter" style="display:none;">{{ end_counter }}</td>
+                <td></td>
+                <td></td>
+            </tr>                  
+        </tfoot>
+    </table>
+    <table class="mt-5" style="width:100%;">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Data wyjazdu</th>
+                <th>Opis trasy</th>
+                <th>Cel wyjazdu</th>
+                <th>Km</th>
+                <th>
+                    <a id="exitInputRate" href="#" title="Włącz/Wyłącz edycję stawki.">
+                        <i class="fa fa-edit"></i> 
+                    </a>
+                    Stawka
+                </th>
+                <th>
+                    <a id="exitInputValue" href="#" title="Włącz/Wyłącz edycję wartości.">
+                        <i class="fa fa-edit"></i> 
+                    </a>
+                    Wartość
+                </th>
+                <th>Stan licznika</th>
+                <th></th>
+            </tr>
+        </thead>
+        {% set rate %}{% include 'admin/type_rate.html.twig' with {'value': entity.getVehicle().type } %}{% endset %}
+        <form id="addCourseForm" class=" new-form" action="{{ path('add_records_course') }}" method="post">
+            <tbody>
+                <tr>
+                    <td>
+                        <span class="d-inline-block" tabindex="0" data-placement="top" data-toggle="tooltip" title="Wybierz i dodaj trasę z gotowych tras.">
+                            <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#addRoute">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </span>
+                    </td>
+                    <td style="max-width:150px;">
+                        <input type="text" id="course_date" name="course[date]" class="form-control" value="{{ 'now'|date('Y-m-d') }}" class='datepicker-here' />
+                    </td>
+                    <td>
+                        <input type="text" id="course_description" name="course[description]" class="form-control" value="" />
+                    </td>
+                    <td>
+                        <input type="text" id="course_trip" name="course[trip]" class="form-control" value="" />
+                    </td>
+                    <td style="max-width:120px;">
+                        <input type="number" id="course_km" name="course[km]" class="form-control" value="" />
+                    </td>
+                    <td style="max-width:100px;">
+                        <input type="text" id="course_rate" name="course[rate]" class="form-control" value="{{ rate }}" readonly>
+                    </td>
+                    <td style="max-width:100px;">
+                        <input type="number" id="course_value" name="course[value]" class="form-control" value="0.00" readonly>
+                    </td>
+                    <td style="max-width:120px;">
+                        <input type="number" id="course_counter" name="course[counter]" class="form-control" value="{{ end_counter|number_format() }}" />
+                    </td>
+                    <td>
+                        <span class="d-inline-block" tabindex="0" data-placement="top" data-toggle="tooltip" title="Dodaj uwagę co do trasy.">
+                            <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#noteForm">
+                                <i class="fa fa-comment"></i>
+                            </a>
+                        </span>
+                        <input type="hidden" id="course_id" name="course[id]" value="{{ entity.id }}" />
+                        {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+                        <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">
+                            Dodaj
+                        </a>
+                        {% else %}
+                        <span class="d-inline-block" tabindex="0" data-placement="top" data-toggle="tooltip" title="Dodaj trasę do ewidencji.">
+                            <button type="submit" id="saveCourse" class="btn btn-primary action-save" title="Dodaj rekord">
+                                Dodaj
+                            </button>
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+    </table>
+    <span class="d-inline-block" tabindex="0" data-placement="right" data-toggle="tooltip" title="Wybierz i powiel kilka razy wybraną trasę.">
+        <button type="button" class="btn btn-primary btn-lg mt-2" data-toggle="modal" data-target="#CourseMany">
+            Wybierz i powiel wybraną trasę
+        </button>
+    </span>
+
+    <div class="modal" id="noteForm" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Uwagi</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        <input type="text" id="course_comments" name="course[comments]" class="form-control" value="" />
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="modal" id="addRoute" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wybierz trasę</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <p>
+                {% if route %}
+                <table class="table datagrid" id="route">
+                    <thead>
+                    <tr>
+                        <th class="text-left pt-4 pb-3 pl-3">Nazwa trasy</th>
+                        <th class="text-left pt-4 pb-3">Opis trasy</th>
+                        <th class="text-left pt-4 pb-3">Kilometry</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for tab in route %}
+                    <tr id="{{ tab.id }}">
+                        <td id="name">{{ tab.name }}</td>
+                        <td id="description">{{ tab.description }}</td>
+                        <td id="km">{{ tab.km|number_format() }}</td>
+                        <td class="actions">
+                            <a class="action-edit click_route" id="{{ tab.id }}" title="" href="" target="_self">Wybierz</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-danger" role="alert">
+                    Nie masz tras w bazie danych. Dodaj w zakładce Trasy.
+                </div>                    
+                {% endif %}
+            </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editNote" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Uwagi</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <div class="modal-body">
+        <form id="editNoteForm">
+            <input type="hidden" id="edit_comments_id" name="edit_comments[id]" value="" />
+            <input type="text" id="edit_comments_text" name="edit_comments[text]" class="form-control" value="" />
+        </form>
+    </div>
+    <div class="modal-footer">
+        {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+            <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">Zapisz</a>
+        {% else %}
+            <button id="saveNote" action="{{ path('save_note') }}" type="button" class="btn btn-primary" data-dismiss="modal">Zapisz</button>
+        {% endif %}
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+    </div>
+</div>
+</div>
+</div>
+
+<div class="modal" id="editCourse" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edytuj</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <form id="editCourseForm" class=" new-form" action="{{ path('edit_records_course') }}" method="post">
+        <div class="modal-body">
+        
+            <table style="width:100%;">
+                <tr>
+                    <th>Data wyjazdu</th>
+                    <td>
+                        <input type="text" id="e_course_date" name="e_course[date]" class="form-control" value="" class='datepicker-here'/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Opis trasy</th>
+                    <td>
+                        <input type="text" id="e_course_description" name="e_course[description]" class="form-control" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Cel wyjazdu</th>
+                    <td>
+                        <input type="text" id="e_course_trip" name="e_course[trip]" class="form-control" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Km</th>
+                    <td>
+                        <input type="number" id="e_course_km" name="e_course[km]" class="form-control" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Stawka</th>
+                    <td>
+                        <input type="decimal" id="e_course_rate" name="e_course[rate]" class="form-control" value="">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Wartość</th>
+                    <td>
+                        <input type="decimal" id="e_course_value" name="e_course[value]" class="form-control" value="0.00">
+                    </td>
+                </tr>
+                <tr>
+                    <th>Stan licznika</th>
+                    <td>
+                        <input type="number" id="e_course_counter" name="e_course[counter]" class="form-control" value="" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" name="e_course[id_record]" value="{{ entity.id }}" />
+            <input type="hidden" id="e_course_id" name="e_course[id]" value="" />
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+                <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">Zapisz</a>
+            {% else %}
+                <button type="submit" id="e_saveCourse" class="btn btn-primary action-save">Zapisz</button>
+            {% endif %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+        </div>
+    </form>
+</div>
+</div>
+</div>
+
+{% if entity.getVat() == 1 %}
+<div class="modal fade" id="openVatForm" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Tabelka ewidencji VAT</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="vatForm" class=" new-form" action="{{ path('update_records_vat', { id: entity.id }) }}" method="post">
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="border-bottom:1px solid rgba(0,0,0,.1)">
+                    <div class="col-6" style="width:100%;">Dzień rozpoczęcia prowadzenia ewidencji</div>
+                    <div class="col-6">
+                        <input type="date" id="vat_form_date_start" name="vat_form[date_start]" class="form-control" value="{% if entity.getVatDateStart() %}{{ entity.getVatDateStart()|date('Y-m-d') }}{% endif %}" />
+                    </div>
+                </div>
+                <div class="form-group" style="border-bottom:1px solid rgba(0,0,0,.1)">
+                    <div class="col-6" style="width:100%;">Stan licznika na dzień rozpoczęcia prowadzenia ewidencji</div>
+                    <div class="col-6">
+                        <input type="number" id="vat_form_counter_start" name="vat_form[counter_start]" class="form-control" value="{{ entity.getVatCounterStart()|number_format() }}" />
+                    </div>
+                </div>
+                <div class="form-group" style="border-bottom:1px solid rgba(0,0,0,.1)">
+                    <div class="col-6" style="width:100%;">Stan licznika na początek okresu rozliczeniowego</div>
+                    <div class="col-6">
+                        <input type="number" id="vat_form_period_start" name="vat_form[period_start]" class="form-control" value="{{ entity.getVatPeriodStart()|number_format() }}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-6" style="width:100%;">Stan licznika na koniec okresu rozliczeniowego</div>
+                    <div class="col-6">
+                        <input type="number" id="vat_form_period_end" name="vat_form[period_end]" class="form-control" value="{{ entity.getVatPeriodEnd()|number_format() }}" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group" style="border-bottom:1px solid rgba(0,0,0,.1)">
+                    <div class="col-6" style="width:100%;">Dzień zakończenia prowadzenia ewidencji</div>
+                    <div class="col-6">
+                        <input type="date" id="vat_form_date_end" name="vat_form[date_end]" class="form-control" value="{% if entity.getVatDateEnd() %}{{ entity.getVatDateEnd()|date('Y-m-d') }}{% endif %}" />
+                    </div>
+                </div>
+                <div class="form-group" style="border-bottom:1px solid rgba(0,0,0,.1)">
+                    <div class="col-6" style="width:100%;">Stan licznika na dzień zakończenia prowadzenia ewidencji</div>
+                    <div class="col-6">
+                        <input type="number" id="vat_form_counter_end" name="vat_form[counter_end]" class="form-control" value="{{ entity.getVatCounterEnd()|number_format() }}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-6" style="width:100%;">Liczba przejechanych kilometrów na dzień zakończenia prowadzenia ewidencji</div>
+                    <div class="col-6">
+                        <input type="number" id="vat_form_km_end" name="vat_form[km_end]" class="form-control" value="{{ entity.getVatKmEnd()|number_format() }}" />
+                    </div>
+                </div>
+            </div>
+        </div> 
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+        {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+            <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">Zapisz</a>
+        {% else %}
+            <button type="submit" id="vatFormSave" class="btn btn-primary action-save">Zapisz</button>
+        {% endif %}
+      </div>
+    </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<div class="modal" id="CourseMany" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wybierz i powiel trasę</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="CourseManySave" class="new-form" action="{{ path('add_records_course_many', { id: entity.id }) }}" method="post">
+            <div class="modal-body" style="float:center;text-align:center;">
+            <p>
+            {% if route %}
+                <select class="custom-select" id="course_many_route" name="course_many[route]">
+                    <option selected>Wybierz trasę...</option>
+                {% for tab in route %}
+                    <option value="{{ tab.id }}">{{ tab.name }}</option>
+                {% endfor %}
+                </select>
+            {% else %}
+                <div class="alert alert-danger" role="alert">
+                    Nie masz tras w bazie danych. Dodaj w zakładce Trasy.
+                </div>                    
+            {% endif %}
+            <div>
+                <input type="hidden" id="course_many_date" name="course_many[date]" class="form-control" value="" class='datepicker-here'/>
+            </div>
+            </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+                <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">Powiel</a>
+            {% else %}
+                <button type="submit" class="btn btn-primary action-save">Powiel</button>
+            {% endif %}
+            </div>
+        </form>
+        </div>
+    </div>
+</div>

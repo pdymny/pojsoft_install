@@ -1,0 +1,9 @@
+api:
+	id_user: 1
+	token: 12345
+	path:
+	    mail_send_forgot: 'http://127.0.0.1:8001/api/mail/send/forgot'
+	    mail_send_deadlines: 'http://127.0.0.1:8001/api/mail/send/deadlines'
+	    sms_send_deadlines: 'http://127.0.0.1:8001/api/sms/send/deadlines'
+	    help_send: 'http://127.0.0.1:8001/api/help/send'
+	    help_load: 'http://127.0.0.1:8001/api/help/load'

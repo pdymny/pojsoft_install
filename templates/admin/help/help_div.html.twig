@@ -1,0 +1,13 @@
+<a href="#" class="list-group-item list-group-item-action flex-column align-items-start mt-2 {% if what == 0 %}list-group-item-primary{% endif %}">
+	<div class="d-flex w-100 justify-content-between">
+		<h5 class="mb-1">
+		{% if what == 1 %}
+			Klient
+		{% else %}
+			Pomoc Techniczna
+		{% endif %}
+		</h5>
+		<small>{{ date|date('H:i d-m-Y') }}</small>
+	</div>
+	<p class="mb-1">{{ text }}</p>
+</a>

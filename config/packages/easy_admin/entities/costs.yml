@@ -1,0 +1,20 @@
+easy_admin:
+    entities:
+        Costs:
+            class: App\Entity\Costs
+            controller: App\Controller\AdminController
+            list:
+              title: 'Koszty'
+              actions:
+                - { name: 'new', label: 'Nowy koszt' }
+              fields: ['id', { property: 'name', label: 'Nazwa kosztu' }, { property: 'description', label: 'Opis kosztu' }, { property: 'document', label: 'Nazwa dokumentu' }, { property: 'value', label: 'Wartość' }]
+            form:
+              fields: 
+                    - { property: 'name', label: 'Nazwa kosztu' }
+                    - { property: 'description', label: 'Opis kosztu' }
+                    - { property: 'document', label: 'Nazwa dokumentu' }
+                    - { property: 'value', label: 'Wartość' }
+            edit:
+                title: 'Edytuj koszt (#%%entity_id%%)'
+            new: 
+                title: 'Dodaj nowy koszt'

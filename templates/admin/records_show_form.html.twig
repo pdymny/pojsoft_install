@@ -1,0 +1,213 @@
+{% extends 'admin/layout_login.html.twig' %}
+
+{% block page_title %}Ewidencja: {% include 'admin/month.html.twig' with { 'value': entity.month } %} {{ entity.year }} {% endblock %}
+
+{% block body_id 'welcome' %}
+
+{% block content_title %}Ewidencja: {% include 'admin/month.html.twig' with { 'value': entity.month } %} {{ entity.year }} {% endblock %}
+
+{% block main %}
+
+<div style="margin-top: 0em;background: var(--form-bg);padding: 18px 20px;">
+    <div class="nav-tabs-custom form-tabs">
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link active" href="#_easyadmin_form_design_element_1" id="_easyadmin_form_design_element_1-tab" data-toggle="tab">Ewidencja przebiegu</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#_easyadmin_form_design_element_2" id="_easyadmin_form_design_element_2-tab" data-toggle="tab">Koszty eksploatacyjne</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#_easyadmin_form_design_element_3" id="_easyadmin_form_design_element_3-tab" data-toggle="tab" data="{{ path('load_taily', {id: entity.id }) }}">Zestawienie</a>
+            </li>
+        </ul>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h6>Dane firmy:</h6>
+                {{ company.name }}<br/>
+                {{ company.street }}<br/>
+                {{ company.code }} {{ company.city }}<br/>
+                NIP: {{ company.nip }}
+            </div>
+            <div class="col-md-4">
+                <h6>Dane osoby używającej pojazd:</h6>
+                {{ entity.getDriver().firstname }} {{ entity.getDriver().name }}<br/>
+                {{ entity.getDriver().street}}<br/>
+                {{ entity.getDriver().codepost }} {{ entity.getDriver().city }}
+            </div>
+            <div class="col-md-4">
+                <h6>Dane pojazdu:</h6>
+                <table style="width:100%">
+                    <tr>
+                        <th>Nazwa:</th>
+                        <td>{{ entity.getVehicle().name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Numer rejestracyjny:</th>
+                        <td>{{ entity.getVehicle().registration }}</td>
+                    </tr>
+                    <tr>
+                        <th>Typ:</th>
+                        <td>{% include 'admin/type_select.html.twig' with {'value': entity.getVehicle().type } %}</td>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+        <hr>
+
+        <div class="tab-content mt-4">
+            <div id="_easyadmin_form_design_element_1" class="tab-pane active">
+                {% include 'admin/records_course.html.twig' %}
+            </div>
+            <div id="_easyadmin_form_design_element_2" class="tab-pane">
+                {% include 'admin/records_costs.html.twig' %}
+            </div>
+            <div id="_easyadmin_form_design_element_3" class="tab-pane">
+                {% include 'admin/records_taily.html.twig' %}
+            </div>
+        </div>
+    </section>
+
+    <div id="modal-delete" class="modal fade">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <h4>Czy na pewno chcesz usunąć ten element?</h4>
+                    <p>Tej operacji nie można cofnąć.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" data-dismiss="modal" class="btn btn-secondary">
+                        <span class="btn-label">Anuluj</span>
+                    </button>
+                    <form id="delete-form" style="padding:0;">
+                        <button type="button" data-dismiss="modal" class="btn btn-danger" id="modal-delete-button">
+                            <span class="btn-label">Usuń</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}
+
+    {% block content_footer %}
+    <div class="row float-right">
+        <a class=" btn btn-link pr-0 action-list mt-1" title="" href="{{ path('easyadmin', {entity: 'Records', action: 'list' }) }}" target="_self">Wróć do listy</a>
+
+        <div id="footer_easyadmin_form_design_element_1" class="footer-pane">
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+            <a href="#" class="btn btn-danger btn-lg ml-3 mb-3 mr-2 disabled">Pobierz ewidencję - KPiR</a>
+            <a href="#" class="btn btn-danger btn-lg mb-3 mr-2 disabled">Pobierz ewidencję - VAT</a>
+            {% else %}
+            <div class="dropup d-inline">
+                <button class="btn btn-secondary btn-lg dropdown-toggle ml-3 mb-3 mr-2" type="button" id="dropdownDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pobierz ewidencję - KPiR
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownDownButton">
+                    <a class="dropdown-item download" href="{{ path('download', {what: 'csv', class: 'RecordsCourse'}) }}">Plik CSV</a>
+                    <a class="dropdown-item" href="{{ path('records_download_course', {id: entity.id, comments: 'true', render: 1}) }}">Plik PDF z uwagami</a>
+                    <a class="dropdown-item" href="{{ path('records_download_course', {id: entity.id, comments: 'false', render: 1 }) }}">Plik PDF bez uwag</a>
+                </div>
+            </div>
+            {% if entity.getVat() == 1 %}
+            <div class="dropup d-inline">
+                <button class="btn btn-secondary btn-lg dropdown-toggle mb-3 mr-2" type="button" id="dropdownDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pobierz ewidencję - VAT
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownDownButton">
+                    <a class="dropdown-item" href="{{ path('records_download_course', {id: entity.id, comments: 'true', render: 2}) }}">Plik PDF z uwagami</a>
+                    <a class="dropdown-item" href="{{ path('records_download_course', {id: entity.id, comments: 'false', render: 2}) }}">Plik PDF bez uwag</a>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </div>
+        <div id="footer_easyadmin_form_design_element_2" class="footer-pane" style="display:none;">
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+            <a href="#" class="btn btn-danger btn-lg ml-3 mb-3 mr-2 disabled">Pobierz koszty eksploatacyjne</a>
+            {% else %}
+            <div class="dropup">
+                <button class="btn btn-secondary btn-lg dropdown-toggle ml-3 mb-3 mr-2" type="button" id="dropdownDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pobierz koszty eksploatacyjne
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownDownButton">
+                    <a class="dropdown-item download" href="{{ path('download', {what: 'csv', class: 'RecordsCosts'}) }}">Plik CSV</a>
+                    <a class="dropdown-item" href="{{ path('records_download_costs', {id: entity.id}) }}">Plik PDF</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        <div id="footer_easyadmin_form_design_element_3" class="footer-pane" style="display:none;">
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+            <a href="#" class="btn btn-danger btn-lg ml-3 mb-3 mr-2 disabled">Pobierz zestawienie</a>
+            {% else %}
+            <div class="dropup">
+                <button class="btn btn-secondary btn-lg dropdown-toggle ml-3 mb-3 mr-2" type="button" id="dropdownDownButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Pobierz zestawienie
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownDownButton">
+                    <a class="dropdown-item" href="{{ path('records_download_taily', {id: entity.id}) }}">Plik PDF</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    {% endblock %}
+
+    {% block head_stylesheets %}
+        {{ parent() }}
+    <style>
+        #coursesList, #costsList, #tailyList, #route, #cost {
+            background-color:white;
+            border: 1px solid rgba(0,0,0,.1);
+        }
+
+        .datepicker {
+            min-width:100%;
+            z-index:100000;
+        }
+    </style>
+    {% endblock %}
+
+    {% block body_javascript %}
+        {{ parent() }}
+        
+    <script>
+        $(function() {
+
+            // kalendarz z datepicker
+            var min_date = new Date();
+            min_date.setDate(1);
+            min_date.setMonth({{ entity.month-1 }});
+            var max_date = new Date();
+            max_date.setDate(31);
+            max_date.setMonth({{ entity.month-1 }});
+            $('#course_date, #cost_date').datepicker({
+                language: 'pl',
+                minDate: min_date,
+                maxDate: max_date,
+                position: "top left",
+            });
+
+            $('#e_cost_date, #e_course_date').datepicker({
+                language: 'pl',
+                minDate: min_date,
+                maxDate: max_date,
+                position: "left top",
+            });
+
+            $('#course_many_date').datepicker({
+                language: 'pl',
+                minDate: min_date,
+                maxDate: max_date,
+                inline: true,
+                multipleDates: true,
+            });
+
+        });
+    </script>
+    {% endblock %}

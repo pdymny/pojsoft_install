@@ -1,0 +1,109 @@
+{% extends 'admin/layout_login.html.twig' %}
+
+{% block page_title %}Edytuj konto: #{{ entity.id }} ({{ entity.username }}){% endblock %}
+
+{% block body_id 'welcome' %}
+
+{% block content_title %}Edytuj konto: #{{ entity.id }} ({{ entity.username }}){% endblock %}
+
+{% block main %}
+{% if date().timestamp >= app.request.pack.deadline|date('U') %}
+    <div class="alert alert-danger" role="alert">
+        Termin ważności pakietu minął. Prosimy o przedłużenie pakietu, aby można było z niego korzystać bez ograniczeń.
+    </div>
+{% else %}
+<form id="edit-account" class=" edit-form" action="{{ path('editAccount', {id: entity.id}) }}" method="post">
+
+    <div class="row">
+        <div class="field-group col-8 ">
+
+            <fieldset>
+                <legend class="with-icon">
+                    <i class="fa fa-fw fa-history"></i>
+                    Powiadomienia
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+
+                        <table class="table datagrid">
+                            <tr>
+                                <th>Data aktywności</th>
+                                <th>IP</th>
+                                <th>Wydarzenie</th>
+                            </tr>
+                            {% for note in notify %}
+                            <tr>
+                                <td>{{ note.date|date("d-m-Y H:i:s") }}</td>
+                                <td>{{ note.ip }}</td>
+                                <td>{{ note.text }}</td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+
+            </fieldset>
+        </div>
+
+        <div class="field-group col-4 ">
+
+            <fieldset>
+                <legend class="with-icon">
+                    <i class="fa fa-fw fa-id-card"></i>
+                    Edytuj profil
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">   
+
+                        <div class="form-group  field-text">
+                            <label for="account_username" class="form-control-label">Imię i Nazwisko</label>
+                            <div class="form-widget">            
+                                <input type="text" id="account_username" name="account[username]" class="form-control" value="{{ entity.username }}" />
+                            </div>
+                        </div>
+
+                        <div class="form-group  field-text">
+                            <label for="account_phone" class="form-control-label">Telefon</label>
+                            <div class="form-widget">            
+                                <input type="text" id="account_phone" name="account[phone]" class="form-control" value="{{ entity.phone 
+                            }}" />
+                        </div>
+                    </div>
+
+                    <div class="form-group  field-text">
+                        <label for="account_password" class="form-control-label">Satre hasło</label>
+                        <div class="form-widget">            
+                            <input type="password" id="account_password" name="account[password]" class="form-control" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group  field-text">
+                        <label for="account_password_new" class="form-control-label">Nowe hasło</label>
+                        <div class="form-widget">            
+                            <input type="password" id="account_password_new" name="account[password_new]" class="form-control" value="" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block content_footer %}
+{% if date().timestamp >= app.request.pack.deadline|date('U') %}
+
+{% else %}
+    <input type="hidden" id="account__token" name="account[_token]" value="8EvNsH1SmCcSO8Cowt_0Hu83hyCwAmtdvQq7CuCWAcg" />
+    <div class="form-actions">  
+        <button type="submit" class="btn btn-primary action-save">
+            <span class="btn-label">Zapisz zmiany</span>
+        </button>
+        <a class=" btn btn-link pr-0 action-list" title="" href="/admin/?entity=User&action=list&menuIndex=7&submenuIndex=0" target="_self">Wróć do listy</a>     
+    </div>
+</form>
+{% endif %}
+{% endblock %}

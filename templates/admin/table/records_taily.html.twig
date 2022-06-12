@@ -1,0 +1,25 @@
+{% set cumulative_course = 0 %}
+{% set cumulative_cost = 0 %}
+
+{% for tab in table %}
+	{% set cumulative_course = cumulative_course + tab.sum_course %}
+	{% set cumulative_cost = cumulative_cost + tab.sum_cost %}
+
+	<tr>
+		<td class="text-left">{% include 'admin/month.html.twig' with { 'value': tab.month } %}</td>
+		<td class="text-right">{{ tab.sum_course|number_format(2) }}</td>
+		<td class="text-right">{{ cumulative_course|number_format(2) }}</td>
+		<td class="text-right">{{ tab.sum_cost|number_format(2) }}</td>
+		<td class="text-right">{{ cumulative_cost|number_format(2) }}</td>
+		{% if count == loop.index %}
+		<td class="text-right bg-white" style="border-bottom: 1px solid red;">
+			<strong>{{ tab.sum_cost|number_format(2) }}</strong>
+		</td>
+		{% else %}
+		<td class="text-right">
+			{{ tab.sum_cost|number_format(2) }}
+		</td>		
+		{% endif %}
+		<td class="text-right">{{ cumulative_cost|number_format(2) }}</td>
+	</tr>
+{% endfor %}

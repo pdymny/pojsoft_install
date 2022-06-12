@@ -1,0 +1,25 @@
+easy_admin:
+    design:
+        menu:
+            - { label: 'Pulpit', icon: 'dashboard', route: 'dashboard' }
+            - { label: 'Ewidencja', entity: 'Records', icon: 'file-text-o' }
+            - { label: 'Pojazdy', entity: 'Vehicles', icon: 'car' }
+            - { label: 'Kierowcy', entity: 'Drivers', icon: 'users' }
+            - { label: 'Trasy', entity: 'Route', icon: 'map-signs' }
+            - { label: 'Koszty', entity: 'Costs', icon: 'credit-card' }
+            - { label: 'Terminy', entity: 'Deadlines', icon: 'calendar' }
+            - label: 'Ustawienia'
+              icon: 'cog'
+              children:
+                  - { entity: 'User', icon: 'user-circle', label: 'Konta', route: 'kkk' }
+                  - { route: 'data_company', icon: 'info-circle', label: 'Dane firmy' }
+                  - { route: 'notifications', icon: 'bell-o', label: 'Powiadomienia' }
+
+            - { label: 'Informacje' }
+            - { label: 'Strona Główna', url: '#', icon: 'home', target: '_blank' }
+            - { label: 'Cennik', url: '#', icon: 'money', target: '_blank' }
+            - { label: 'Kontakt', url: '#', icon: 'envelope-o', target: '_blank' }
+            - { label: 'Pomoc', url: '#', icon: 'info-circle', target: '_blank' }
+            - { label: 'DymCode', url: '#', icon: 'code', target: '_blank' }
+            - { label: 'Panel klienta', url: '#', icon: 'id-card', target: '_blank' }
+            - { label: 'Program Partnerski', url: '#', icon: 'handshake-o', target: '_blank' }

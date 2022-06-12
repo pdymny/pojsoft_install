@@ -1,0 +1,11 @@
+<tr id="{{ cost.id }}">
+	<td class="text-center" id="lp">{{ lp }}</td>
+	<td class="text-center" id="date" data='{{ cost.date|date("Y-m-d") }}'>{{ cost.date|date("d-m-Y") }}</td>
+	<td class="text-left" id="document">{{ cost.getDocument() }}</td>
+	<td class="text-left" id="description">{{ cost.getDescription() }}</td>
+	<td class="text-right" id="value">{{ cost.value|number_format(2) }}</td>
+	<td class="actions">
+		<a class="action-edit-cost" title="" href="" target="_self" data-toggle="modal" data-target="#editCosts">Edytuj</a>
+		<a class="text-danger action-delete" id="{{ cost.id }}" title="" href="{{ path('delete_records_cost', {id: cost.id }) }}" target="_self">Usuń</a>
+	</td>
+</tr>

@@ -1,0 +1,15 @@
+<tr id="{{ course.id }}">
+    <td class="text-center" id="lp">{{ lp }}</td>
+    <td class="text-center" id="date" data='{{ course.date|date("Y-m-d") }}'>{{ course.date|date("d-m-Y") }}</td>
+    <td class="text-left" id="description">{{ course.getRouteDescription() }}</td>
+    <td class="text-left" id="trip">{{ course.getGoalTrip() }}</td>
+    <td class="text-right" id="km">{{ course.km|number_format() }}</td>
+    <td class="text-right" id="rate">{{ course.rate }}</td>
+    <td class="text-right" id="value">{{ course.value|number_format(2) }}</td>
+    <td class="text-right" id="counter">{{ course.counter|number_format() }}</td>
+    <td class="actions">
+        <a class="action-note" id="{{ course.id }}" data="{{ course.comments }}" title="" href="" data-toggle="modal" data-target="#editNote">Uwagi</a>
+        <a class="action-edit" title="" href="" target="_self" data-toggle="modal" data-target="#editCourse">Edytuj</a>
+        <a class="text-danger action-delete" id="{{ course.id }}" title="" href="{{ path('delete_records_course', {id: course.id }) }}" target="_self">Usuń</a>
+    </td>
+</tr>

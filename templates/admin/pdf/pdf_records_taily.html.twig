@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+	
+	{% include 'admin/pdf/pdf_head.html.twig' %}
+
+	<title>Zestawienie z ewidencji pojazdu</title>
+	<body style="font-family:firefly,DejaVu Sans,sans-serif;font-size:10px;">
+		<h4 style="text-align:center;text-transform:uppercase;">Zestawienie z ewidencji pojazdu</h4>
+		<h5 style="text-align:center;font-size:11px;margin-top:-10px;">
+			{% include 'admin/month.html.twig' with { 'value': entity.month } %} {{ entity.year }}
+		</h5>
+
+		<div style="width:100%;margin-top:10px;">
+		    <div style="width:50%;float:left;">
+		        <h5 style="font-size:11px;">Dane firmy:</h5>
+		        <div style="margin-top:-10px;">
+		            {{ company.name }}<br/>
+		            {{ company.street }}<br/>
+		            {{ company.code }} {{ company.city }}<br/>
+		            NIP: {{ company.nip }}
+		        </div>
+		    </div>
+		</div>
+		<br/><br/>
+		<div style="width:100%;margin-top:90px;">
+		    <h5 style="font-size:11px;">Dane pojazdu:</h5>
+		    <div style="margin-top:-10px;">
+		       <b>Numer rejestracyjny:</b>
+		       {{ entity.getVehicle().registration }}<br/>
+		       <b>Typ:</b>
+		       {% include 'admin/type_select.html.twig' with {'value': entity.getVehicle().type } %}
+		   </div>
+		</div>
+
+        <div style="width:100%;margin-top:20px;">
+			 <table>
+		        <thead>
+		            <tr>
+		                <th rowspan="2" class="x align-middle text-center p-2">Miesiąc</th>
+		                <th colspan="2" class="x text-center p-2">Limit (liczba przejechanych km x stawka za 1 km)</th>
+		                <th colspan="2" class="x text-center p-2">Faktycznie poniesione wydatki</th>
+		                <th colspan="2" class="x text-center p-2">Wydatki zaliczone do kosztów</th>
+		            </tr>
+		            <tr>
+		                <th class="x text-right p-2">w miesiącu</th>
+		                <th class="x text-right p-2">narastająco</th>
+		                <th class="x text-right p-2">w miesiącu</th>
+		                <th class="x text-right p-2">narastająco</th>
+		                <th class="x text-right p-2">w miesiącu</th>
+		                <th class="x text-right p-2">narastająco</th>
+		            </tr>
+		        </thead>
+			    <tbody>
+				{% set cumulative_course = 0 %}
+				{% set cumulative_cost = 0 %}
+
+				{% for tab in table %}
+					{% set cumulative_course = cumulative_course + tab.sum_course %}
+					{% set cumulative_cost = cumulative_cost + tab.sum_cost %}
+
+			        <tr>
+			            <td class="x" style="text-align:center;">{% include 'admin/month.html.twig' with { 'value': tab.month } %}</td>
+			            <td class="x" style="text-align:right;">{{ tab.sum_course|number_format(2) }}</td>
+			            <td class="x" style="text-align:right;">{{ cumulative_course|number_format(2) }}</td>
+			            <td class="x" style="text-align:right;">{{ tab.sum_cost|number_format(2) }}</td>
+			            <td class="x" style="text-align:right;">{{ cumulative_cost|number_format(2) }}</td>
+			            <td class="x" style="text-align:right;"><b>{{ tab.sum_cost|number_format(2) }}</b></td>
+			            <td class="x" style="text-align:right;">{{ cumulative_cost|number_format(2) }}</td>
+			        </tr>
+			    {% endfor %}
+			    </tbody>
+			</table>
+		</div>
+	</body>
+</html>

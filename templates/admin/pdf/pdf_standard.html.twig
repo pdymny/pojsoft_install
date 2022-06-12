@@ -1,0 +1,29 @@
+<div style="width:100%;margin-top:10px;">
+    <div style="width:70%;float:left;">
+        <h5 style="font-size:11px;">Dane firmy:</h5>
+        <div style="margin-top:-10px;">
+            {{ company.name }}<br/>
+            {{ company.street }}<br/>
+            {{ company.code }} {{ company.city }}<br/>
+            NIP: {{ company.nip }}
+        </div>
+    </div>
+    <div style="width:30%;float:right">
+        <h5 style="font-size:11px;">Dane osoby używającej pojazd:</h5>
+        <div style="margin-top:-10px;">
+            {{ entity.getDriver().firstname }} {{ entity.getDriver().name }}<br/>
+            {{ entity.getDriver().street}}<br/>
+            {{ entity.getDriver().codepost }} {{ entity.getDriver().city }}
+        </div>
+    </div>
+</div>
+<br/><br/>
+<div style="width:100%;margin-top:90px;">
+    <h5 style="font-size:11px;">Dane pojazdu:</h5>
+    <div style="margin-top:-10px;">
+       <b>Numer rejestracyjny:</b>
+       {{ entity.getVehicle().registration }}<br/>
+       <b>Typ:</b>
+       {% include 'admin/type_select.html.twig' with {'value': entity.getVehicle().type } %}
+   </div>
+</div>

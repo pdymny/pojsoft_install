@@ -1,0 +1,70 @@
+{% extends 'admin/layout_login.html.twig' %}
+
+{% block page_title %}Nowe konto{% endblock %}
+
+{% block body_id 'welcome' %}
+
+{% block content_title %}Nowe konto{% endblock %}
+
+{% block main %}
+{% if date().timestamp >= app.request.pack.deadline|date('U') %}
+    <div class="alert alert-danger" role="alert">
+        Termin ważności pakietu minął. Prosimy o przedłużenie pakietu, aby można było z niego korzystać bez ograniczeń.
+    </div>
+{% else %}
+<form id="new-account" class=" new-form" action="{{ path('newAccount') }}" method="post">
+
+    <div class="row">
+        <div class="field-group col-12 ">
+                    
+            <div class="form-group  field-text">
+                <label for="account_username" class="form-control-label required">Imię i Nazwisko</label>
+                <div class="form-widget">            
+                    <input type="text" id="account_username" name="account[username]" required="required" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group  field-text">
+                <label for="account_email" class="form-control-label required">E-mail</label>
+                <div class="form-widget">            
+                    <input type="text" id="account_email" name="account[email]" required="required" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group  field-text">
+                <label for="account_phone" class="form-control-label">Telefon</label>
+                <div class="form-widget">            
+                    <input type="text" id="account_phone" name="account[phone]" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group  field-text">
+                <label for="account_password" class="form-control-label required">Hasło</label>
+                <div class="form-widget">            
+                    <input type="password" id="account_password" name="account[password]" required="required" class="form-control" value="" />
+                </div>
+            </div>
+
+            <div class="form-group  field-text">
+                <label for="account_password_return" class="form-control-label required">Powtórz hasło</label>
+                <div class="form-widget">            
+                    <input type="password" id="account_password_return" name="account[password_return]" required="required" class="form-control" value="" />
+                </div>
+            </div>
+{% endif %}
+{% endblock %}
+
+{% block content_footer %}
+{% if date().timestamp >= app.request.pack.deadline|date('U') %}
+
+{% else %}
+    <input type="hidden" id="account__token" name="account[_token]" value="8EvNsH1SmCcSO8Cowt_0Hu83hyCwAmtdvQq7CuCWAcg" />
+        <div class="form-actions">  
+            <button type="submit" class="btn btn-primary action-save">
+                <span class="btn-label">Utwórz konto</span>
+            </button>
+            <a class=" btn btn-link pr-0 action-list" title="" href="/admin/?entity=User&action=list&menuIndex=7&submenuIndex=0" target="_self">Wróć do listy</a>     
+        </div>
+</form>
+{% endif %}
+{% endblock %}

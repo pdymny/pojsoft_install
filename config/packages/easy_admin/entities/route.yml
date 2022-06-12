@@ -1,0 +1,19 @@
+easy_admin:
+    entities:
+        Route:
+            class: App\Entity\Route
+            controller: App\Controller\AdminController
+            list:
+              title: 'Trasy'
+              actions:
+                - { name: 'new', label: 'Nowa trasa' }
+              fields: ['id', { property: 'name', label: 'Nazwa trasy' }, { property: 'description', label: 'Opis trasy' }, { property: 'km', label: 'Kilometry' }]
+            form:
+              fields: 
+                    - { property: 'name', label: 'Nazwa trasy' }
+                    - { property: 'description', label: 'Opis trasy' }
+                    - { property: 'km', label: 'Kilometry' }
+            edit:
+                title: 'Edytuj trasę (#%%entity_id%%)'
+            new: 
+                title: 'Dodaj nową trasę'

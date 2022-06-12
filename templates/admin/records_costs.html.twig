@@ -1,0 +1,187 @@
+<h6>Koszty eksploatacyjne pojazdu</h6>
+<hr>
+<section id="main" class="content-body">
+    <table class="table datagrid" id="costsList">
+        <thead>
+            <tr>
+                <th class="text-center pt-4 pb-3">Lp.</th>
+                <th class="text-center pt-4 pb-3">Data</th>
+                <th class="text-left pt-4 pb-3">Numer dokumentu</th>
+                <th class="text-left pt-4 pb-3">Opis poniesionego wydatku</th>
+                <th class="text-right pt-4 pb-3">Wartość</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% set sum_value = 0 %}
+            {% for cost in entity.getCosts() %}
+                {% set sum_value = sum_value + cost.value %}
+                {% include 'admin/table/records_costs.html.twig' with {'lp': loop.index, 'cost': cost} %}
+            {% endfor %}
+        </tbody>
+        <tfoot style="border-top:1px solid rgba(0,0,0,.1);">
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="text-right"><b>Razem</b></td>
+                <td class="text-right"><div id="costs_sum_value">{{ sum_value|number_format(2) }}</div></td>
+                <td></td>
+            </tr>                  
+        </tfoot>
+    </table>
+    <table class="mt-5" style="width:100%;">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Data</th>
+                <th>Numer dokumentu</th>
+                <th>Opis poniesionego wydatku</th>
+                <th>Wartość</th>
+                <th></th>
+            </tr>
+        </thead>
+        <form id="addCostForm" class=" new-form" action="{{ path('add_records_cost') }}" method="post">
+            <tbody>
+                <tr>
+                    <td style="max-width:30px;text-align:right;">
+                        <span class="d-inline-block" tabindex="0" data-placement="top" data-toggle="tooltip" title="Wybierz koszt z wcześniej dodanych kosztów.">
+                            <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#addCosts">
+                                <i class="fa fa-plus"></i>
+                            </a>
+                        </span>
+                    </td>
+                    <td style="max-width:70px;">
+                        <input type="text" id="cost_date" name="cost[date]" class="form-control" value="{{ 'now'|date('Y-m-d') }}" class='datepicker-here'/>
+                    </td>
+                    <td style="max-width:150px;">
+                        <input type="text" id="cost_document" name="cost[document]" class="form-control" value="" />
+                    </td>
+                    <td>
+                        <input type="text" id="cost_description" name="cost[description]" class="form-control" value="" />
+                    </td>
+                    <td style="max-width:70px;">
+                        <input type="number" id="cost_value" name="cost[value]" class="form-control" value="0.00" />
+                    </td>
+                    <td style="width:50px;text-align:left;">
+                        <input type="hidden" id="cost_id" name="cost[id]" value="{{ entity.id }}" />
+                        {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+                        <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">
+                            Dodaj
+                        </a>
+                        {% else %}
+                        <span class="d-inline-block" tabindex="0" data-placement="top" data-toggle="tooltip" title="Dodaj koszt do ewidencji.">
+                            <button type="submit" id="saveCost" class="btn btn-primary action-save">
+                                Dodaj
+                            </button>
+                        </span>
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+    </table>
+</form>
+
+<div class="modal" id="addCosts" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Wybierz koszt</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            <p>
+                {% if base_costs %}
+                <table class="table datagrid" id="cost">
+                    <thead>
+                    <tr>
+                        <th class="text-left pt-4 pb-3 pl-3">Nazwa kosztu</th>
+                        <th class="text-left pt-4 pb-3">Opis kosztu</th>
+                        <th class="text-left pt-4 pb-3">Nazwa dokumentu</th>
+                        <th class="text-left pt-4 pb-3">Wartość</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for tab in base_costs %}
+                    <tr id="{{ tab.id }}">
+                        <td id="name">{{ tab.name }}</td>
+                        <td id="description">{{ tab.description }}</td>
+                        <td id="document">{{ tab.document }}</td>
+                        <td id="value">{{ tab.value|number_format(2) }}</td>
+                        <td class="actions">
+                            <a class="click_costs" id="{{ tab.id }}" title="" href="" target="_self">Wybierz</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                {% else %}
+                <div class="alert alert-danger" role="alert">
+                    Nie masz kosztów w bazie danych. Dodaj w zakładce Koszty.
+                </div>                    
+                {% endif %}
+            </p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" id="editCosts" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Edytuj</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+      </div>
+      <form id="editCostsForm" class=" new-form" action="{{ path('edit_records_cost') }}" method="post">
+        <div class="modal-body">
+        
+            <table style="width:100%;">
+                <tr>
+                    <th>Data</th>
+                    <td>
+                        <input type="text" id="e_cost_date" name="e_cost[date]" class="form-control" value="" class='datepicker-here'/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Numer dokumentu</th>
+                    <td>
+                        <input type="text" id="e_cost_document" name="e_cost[document]" class="form-control" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Opis poniesionego wydatku</th>
+                    <td>
+                        <input type="text" id="e_cost_description" name="e_cost[description]" class="form-control" value="" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Wartość</th>
+                    <td>
+                        <input type="decimal" id="e_cost_value" name="e_cost[value]" class="form-control" value="0.00">
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <input type="hidden" name="e_cost[id_record]" value="{{ entity.id }}" />
+            <input type="hidden" id="e_cost_id" name="e_cost[id]" value="" />
+            {% if date().timestamp >= app.request.pack.deadline|date('U') %}
+                <a class="btn btn-danger disabled" title="Brak aktualnego pakietu">Zapisz</a>
+            {% else %}
+                <button type="submit" id="e_saveCost" class="btn btn-primary action-save">Zapisz</button>
+            {% endif %}
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+        </div>
+    </form>
+</div>
+</div>
+</div>

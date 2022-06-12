@@ -1,0 +1,30 @@
+easy_admin:
+    entities:
+        Drivers:
+            class: App\Entity\Drivers
+            controller: App\Controller\AdminController
+            list:
+              title: 'Kierowcy'
+              actions:
+                - { name: 'new', label: 'Nowy kierowca' }
+              fields: ['id', { property: 'firstname', label: 'Imię' }, { property: 'name', label: 'Nazwisko' }, { property: 'street', label: 'Ulica' }, { property: 'code_post', label: 'Kod pocztowy' }, { property: 'city', label: 'Miasto' }, { property: 'phone', label: 'Telefon' }, { property: 'email', label: 'E-mail' } ]
+            form:
+              fields: 
+                    - { type: 'group', label: 'Podstawowe dane kierowcy', icon: 'user', css_class: 'col-sm-6' }
+                    - { property: 'firstname', label: 'Imię', css_class: 'large' }
+                    - { property: 'name', label: 'Nazwisko', css_class: 'large' }
+                    - { property: 'street', label: 'Ulica', css_class: 'large' }
+                    - { property: 'code_post', label: 'Kod pocztowy', css_class: 'large' }
+                    - { property: 'city', label: 'Miasto', css_class: 'large' }
+                    - { type: 'group', label: 'Dodatkowe dane kierowcy', icon: 'user', css_class: 'col-sm-6' }
+                    - { property: 'phone', label: 'Telefon', css_class: 'large' }
+                    - { property: 'email', label: 'E-mail', css_class: 'large' }
+                    - { type: 'group', label: 'Notatnik', icon: 'sticky-note-o', css_class: 'col-sm-12'}
+                    - { property: 'description', type: 'text_editor', label: 'Miejsce na opis lub notatki jeśli potrzeba.' }
+                    - { type: 'group', label: 'Załączniki', icon: 'file-o', css_class: 'col-sm-12' }
+                    - { property: 'attachments', label: 'Miejsce na załączniki.', type: 'collection', type_options: {entry_type: 'App\Form\DriversAttachmentType', by_reference: false } }
+            edit:
+                title: 'Edytuj kierowcę (#%%entity_id%%)'
+            new: 
+                title: 'Dodaj nowego kierowcę'
+           

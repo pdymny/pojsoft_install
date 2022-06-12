@@ -1,0 +1,39 @@
+easy_admin:
+    entities:
+        Vehicles:
+            class: App\Entity\Vehicles
+            controller: App\Controller\AdminController
+            list:
+              title: 'Pojazdy'
+              actions:
+                - { name: 'new', label: 'Nowy pojazd' }
+                - { name: '-show' }
+              fields: ['id', { property: 'name', label: 'Nazwa' }, { property: 'registration', label: 'Rejestracja' }, { property: 'vin', label: 'Numer VIN' }, { property: 'first_registration', label: 'Pierwsza rejestracja' }, { property: 'course', label: 'Przebieg' }, { property: 'type', label: 'Typ', template: 'admin/type_select.html.twig' } ]
+            form:
+              title: 'Edytuj pojazd (#%%entity_id%%)'
+              fields: 
+                    - { type: 'group', label: 'Dane pojazdu', icon: 'car', columns: '6' }
+                    - { property: 'name', label: 'Nazwa' }
+                    - { property: 'registration', label: 'Numer rejestracyjny' }
+                    - { property: 'vin', label: 'VIN pojazdu' }
+                    - { property: 'first_registration', label: 'Pierwsza rejestracja' }
+                    - { property: 'type', label: 'Typ pojazdu', type_options: { block_name: 'type_select' } }
+                    - { property: 'counting_course', label: 'Automatyczne zliczanie przebiegu' }
+                    - { property: 'course', label: 'Przebieg' }
+                    - { property: 'goal_vat', label: 'Prowadzenie ewidencji dla celów VAT' }
+                    - { property: 'date_commencement_records', label: 'Dzień rozpoczęcia prowadzenia ewidencji' }
+                    - { property: 'state_counter', label: 'Stan licznika na dzień rozpoczęcia prowadzenia ewidencji' }
+                    - { type: 'group', label: 'Ważne terminy', icon: 'calendar', columns: '6' }
+                    - { property: 'date_overview', label: 'Termin przeglądu' }
+                    - { property: 'date_insurance', label: 'Termin ubezpieczenia' }
+                    - { property: 'date_oil', label: 'Termin wymiany oleju' }
+                    - { property: 'date_warranty', label: 'Termin gwarancji' }
+                    - { property: 'date_udt', label: 'Termin UDT' }
+                    - { property: 'date_mechanic', label: 'Termin wizyty u mechanika' }
+                    - { property: 'date_documents', label: 'Termin ważności dokumentów' }
+                    - { type: 'group', label: 'Notatnik', icon: 'sticky-note-o', columns: '12' }
+                    - { property: 'description', type: 'text_editor', label: 'Miejsce na opis lub natatki jeśli potrzeba.' }
+                    - { type: 'group', label: 'Załączniki', icon: 'file-o', columns: '12' }
+                    - { property: 'attachments', label: 'Miejsce na załączniki.', type: 'collection', type_options: {entry_type: 'App\Form\VehiclesAttachmentType', by_reference: false } }
+            new:
+              title: 'Nowy pojazd'

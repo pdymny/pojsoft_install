@@ -1,0 +1,26 @@
+easy_admin:
+    entities:
+        Records:
+            class: App\Entity\Records
+            controller: App\Controller\AdminController
+            list:
+              title: 'Ewidencja'
+              batch_action:
+                - { name: 'akcja', label: 'Historia' }
+              actions:
+                - { name: 'new', label: 'Nowy arkusz' }
+                - { name: 'show', label: 'Zarządzaj arkuszem' }      
+              fields: ['id', { property: 'month', label: 'Miesiąc', template: 'admin/month.html.twig' }, { property: 'year', label: 'Rok', format: '%03d' }, { property: 'vehicle.name', label: 'Pojazd' }, { property: 'driver.fullname', label: 'Kierowca' } ]
+            form:
+              title: 'Edytuj arkusz ewidencji (#%%entity_id%%)'
+              fields: 
+                - { property: 'month', label: 'Miesiąc', type_options: { block_name: 'month_select' } }
+                - { property: 'year', label: 'Rok' }
+                - { property: 'driver', label: 'Kierowca' }
+            new:
+                title: 'Nowy arkusz ewidencji'
+                fields:
+                    - { property: 'year', label: 'Rok', type_options: { data: '2020' } }
+                    - { property: 'vehicle', label: 'Pojazd' }
+            templates:
+                show: 'admin/records_show_form.html.twig'

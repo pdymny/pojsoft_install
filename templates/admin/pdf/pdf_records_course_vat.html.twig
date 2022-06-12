@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pl">
+	
+	{% include 'admin/pdf/pdf_head.html.twig' %}
+
+	<title>Ewidencja przebiegu pojazdu (VAT)</title>
+	<body style="font-family:firefly,DejaVu Sans,sans-serif;font-size:10px;">
+		<h4 style="text-align:center;text-transform:uppercase;">Ewidencja przebiegu pojazdu (vat)</h4>
+		<h5 style="text-align:center;font-size:11px;margin-top:-10px;">
+			{% include 'admin/month.html.twig' with { 'value': entity.month } %} {{ entity.year }}
+		</h5>
+
+		<div style="width:100%;margin-top:10px;">
+		    <div style="width:45%;float:left;">
+		        <h5 style="font-size:11px;">Dane firmy:</h5>
+		        <div style="margin-top:-10px;">
+		            {{ company.name }}<br/>
+		            {{ company.street }}<br/>
+		            {{ company.code }} {{ company.city }}<br/>
+		            NIP: {{ company.nip }}
+		        </div>
+		    </div>
+		    <div style="width:55%;float:right;position:absolute;">
+		        <table style="width:100%;float:right;position:absolute;padding:1px;">
+		        	<tr>
+		        		<td class="x">Dzień rozpoczęcia prowadzenia ewidencji</td>
+		        		<td class="x" style="text-align:center;">{{ entity.getVatDateStart()|date("d-m-Y") }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Stan licznika na dzień rozpoczęcia prowadzenia ewidencji</td>
+		        		<td class="x" style="text-align:right;">{{ entity.getVatCounterStart()|number_format() }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Dzień zakończenia prowadzenia ewidencji</td>
+		        		<td class="x" style="text-align:center;">{{ entity.getVatDateEnd()|date('d-m-Y') }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Stan licznika na dzień zakończenia prowadzenia ewidencji</td>
+		        		<td class="x" style="text-align:right;">{{ entity.getVatCounterEnd()|number_format() }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Liczba przejechanych kilometrów na dzień zakończenia prowadzenia ewidencji</td>
+		        		<td class="x" style="text-align:right;">{{ entity.getVatKmEnd()|number_format() }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Stan licznika na początek okresu rozliczeniowego</td>
+		        		<td class="x" style="text-align:right;">{{ entity.getVatPeriodStart()|number_format() }}</td>
+		        	</tr>
+		        	<tr>
+		        		<td class="x">Stan licznika na koniec okresu rozliczeniowego</td>
+		        		<td class="x" style="text-align:right;">{{ entity.getVatPeriodEnd()|number_format() }}</td>
+		        	</tr>
+		        </table>
+		    </div>
+		</div>
+		<br/><br/>
+		<div style="width:100%;margin-top:90px;">
+		    <h5 style="font-size:11px;">Dane pojazdu:</h5>
+		    <div style="margin-top:-10px;">
+		       <b>Numer rejestracyjny:</b>
+		       {{ entity.getVehicle().registration }}<br/>
+		       <b>Typ:</b>
+		       {% include 'admin/type_select.html.twig' with {'value': entity.getVehicle().type } %}
+		   </div>
+		</div>
+
+        <div style="width:100%;margin-top:20px;">
+			 <table>
+			        <thead>
+			            <tr>
+			                <th class="x">Lp.</th>
+			                <th class="x">Data <br/>wyjazdu</th>
+			                <th class="x">Opis trasy</th>
+			                <th class="x">Cel wyjazdu</th>
+			                <th class="x">Km</th>
+			                <th class="x">Stan licznika</th>
+			                <th class="x">Imię i <br/>naziwsko</th>
+			                {% if comments == 'true' %}
+			                <th class="x">Uwagi</th>
+			                {% endif %}
+			            </tr>
+			        </thead>
+			        <tbody>
+			            {% set sum_km = 0 %}
+			            {% for course in entity.getCourses() %}
+			            {% set sum_km = sum_km + course.km %}
+			            <tr>
+			                <td class="x" style="text-align:center;">{{ loop.index }}</td>
+			                <td class="x" style="text-align:center;">{{ course.date|date("d-m-Y") }}</td>
+			                <td class="x">{{ course.getRouteDescription() }}</td>
+			                <td class="x">{{ course.getGoalTrip() }}</td>
+			                <td class="x" style="text-align:right;">{{ course.km|number_format() }}</td>
+			                <td class="x" style="text-align:right;">{{ course.counter|number_format() }}</td>
+			                <td class="x" style="text-align:center;">{{ entity.getDriver() }}</td>
+			               	{% if comments == 'true' %}
+			                <td class="x">{{ course.comments }}</td>
+			                {% endif %}
+			            </tr>
+			            {% endfor %}
+			        </tbody>
+			        <tbody>
+			            <tr>
+			                <td style="border: none;"></td>
+			                <td></td>
+			                <td></td>
+			                <th class="x" style="text-align:right;">Razem</th>
+			                <td class="x" style="text-align:right;">{{ sum_km|number_format() }}</td>
+			                <td></td>
+			                {% if comments == 'true' %}
+			                <td></td>
+			                {% endif %}
+			                <td></td>
+			            </tr>                  
+			        </tbody>
+			    </table>
+		</div>
+		<div style="width:100%;margin-top:50px;">
+			<div style="width:200px;text-align:center;margin-left:450px;">
+				<p>...........................................................................</p>
+				<p style="margin-top:-15px;float-size:8px;">(podpis kierownika jednostki)</p>
+			</div>
+		</div>
+	</body>
+</html>

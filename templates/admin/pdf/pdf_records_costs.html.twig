@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pl">
+	
+	{% include 'admin/pdf/pdf_head.html.twig' %}
+
+	<title>Zestawienie kosztów eksploatacyjnych pojazdu</title>
+	<body style="font-family:firefly,DejaVu Sans,sans-serif;font-size:10px;">
+		<h4 style="text-align:center;text-transform:uppercase;">Zestawienie kosztów eksploatacyjnych pojazdu</h4>
+		<h5 style="text-align:center;font-size:11px;margin-top:-10px;">
+			{% include 'admin/month.html.twig' with { 'value': entity.month } %} {{ entity.year }}
+		</h5>
+
+		{% include 'admin/pdf/pdf_standard.html.twig' %}
+
+        <div style="width:100%;margin-top:20px;">
+			 <table>
+			        <thead>
+			            <tr>
+			                <th class="x">Lp.</th>
+			                <th class="x">Data</th>
+			                <th class="x">Numer dokumentu</th>
+			                <th class="x">Opis poniesionego wydatku</th>
+			                <th class="x">Wartość</th>
+			            </tr>
+			        </thead>
+			        <tbody>
+			            {% set sum_value = 0 %}
+			            {% for cost in entity.getCosts() %}
+			            {% set sum_value = sum_value + cost.value %}
+			            <tr>
+			                <td class="x" style="text-align:center;">{{ loop.index }}</td>
+			                <td class="x" style="text-align:center;">{{ cost.date|date("d-m-Y") }}</td>
+			                <td class="x">{{ cost.getDocument() }}</td>
+			                <td class="x">{{ cost.getDescription() }}</td>
+			                <td class="x" style="text-align:right;">{{ cost.value|number_format(2) }}</td>
+			            </tr>
+			            {% endfor %}
+			        </tbody>
+			        <tbody>
+			            <tr>
+			                <td></td>
+			                <td></td>
+			                <td></td>
+			                <th class="x" style="text-align:right;">Razem</th>
+			                <td class="x" style="text-align:right;">{{ sum_value|number_format(2) }}</td>
+			            </tr>                  
+			        </tbody>
+			    </table>
+		</div>
+	</body>
+</html>

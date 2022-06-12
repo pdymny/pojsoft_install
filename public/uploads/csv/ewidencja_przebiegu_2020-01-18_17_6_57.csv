@@ -1,0 +1,10 @@
+id,date,route_description,goal_trip,km,rate,value,counter,comments
+4,2020-01-17,test,"nowe - janowiec",150,0.0000,125.00,161,test
+5,2020-01-17,test,"nowe - janowiec",150,0.0000,125.00,161,test
+6,2020-01-17,test,"nowe - janowiec",150,0.0000,125.00,161,test
+7,2020-01-17,test,"Jakaś tras",100,0.0000,83.00,111,
+11,2020-01-17,test,"nowe - janowiec",150,0.8358,125.37,561,
+12,2020-01-17,test,"Jakaś tras",100,0.8358,83.58,661,komentarz
+13,2020-01-17,test,"nowe - janowiec",150,0.8358,125.37,150,
+14,2020-01-17,test,"Jakaś tras",100,0.8358,83.58,250,
+15,2020-01-17,test,"nowe - janowiec",150,0.8358,125.37,811,

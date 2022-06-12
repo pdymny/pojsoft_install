@@ -1,0 +1,28 @@
+# This file sets the configuration of the 'User' entity.
+#
+# NOTE: this demo application splits the backend configuration into several
+# small files for educational purposes. In your application you can put the
+# entire backend configuration in just one file.
+#
+# The configuration options are explained in detail in the bundle documentation,
+# which is published at https://github.com/javiereguiluz/EasyAdminBundle
+easy_admin:
+    entities:
+        User:
+            class: App\Entity\User
+            controller: App\Controller\AdminController
+            list:
+                title: 'Konta'
+                actions:
+                    - { name: 'new', label: 'Nowe konto' }
+                    - { name: '-show' }
+                    - { name: 'edit' }
+                    - { name: '-delete' }
+                fields: ['id', { property: 'active', label: 'Konto aktywne' }, { property: 'username', label: 'Imię i Nazwisko' }, { property: 'email', label: 'E-mail' }, { property: 'phone', label: 'Telefon' }, { property: 'userNotifies', label: 'Powiadomienia' }]
+
+            templates:
+                new: 'admin/users_new_form.html.twig'
+                edit: 'admin/users_edit_form.html.twig'
+
+
+

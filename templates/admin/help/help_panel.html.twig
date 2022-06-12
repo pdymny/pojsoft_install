@@ -1,0 +1,37 @@
+<div class="text-right fixed-bottom mr-3 mb-3">
+  <span class="d-inline-block" tabindex="0" data-toggle="tooltip" data-placement="left" title="Otwórz panel pomocy technicznej.">
+    <a id="help" role="button" href="{{ path('load_help') }}" data-toggle="modal" data-target="#helpModal">
+      <i class="fa fa-4x fa-question-circle"></i>
+    </a>
+  </span>
+</div>
+
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Pomoc Techniczna</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body list-group" id="windowHelp" style="height:300px;overflow-y:auto;">
+          <a href="#" class="list-group-item list-group-item-action flex-column align-items-start list-group-item-primary">
+            <div class="d-flex w-100 justify-content-between">
+              <h5 class="mb-1">Pomoc Techniczna</h5>
+              <small>{{ "now"|date('H:i d-m-Y') }}</small>
+            </div>
+            <p class="mb-1">Wyślij pytanie do pomocy technicznej, a na pewno udzielimy Ci odpowiedzi wciągu 24h.</p>
+          </a>      
+        <div id="printHelp"></div>
+      </div>
+      <div class="modal-footer">
+        <form id="sendHelp" action="{{ path('send_help') }}" method="post" style="width:100%;">
+          <input type="text" id="send_help_text" name="send_help_text" class="form-control" placeholder="Treść wiadomości..."/>
+          <button type="submit"id="sendHelpButton" class="btn btn-primary float-right mt-2 ml-2">Wyślij wiadomość</button>
+          <button type="button" class="btn btn-secondary float-right mt-2" data-dismiss="modal">Zamknij</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

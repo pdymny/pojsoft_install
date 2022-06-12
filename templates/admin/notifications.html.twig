@@ -1,0 +1,247 @@
+{% extends 'admin/layout_login.html.twig' %}
+
+{% block page_title 'Pulpit' %}
+
+{% block body_id 'welcome' %}
+
+{% block content_title 'Powiadomienia' %}
+
+{% block main %}
+<form id="save-notify" class=" new-form" action="{{ path('notifySave') }}" method="post">
+
+    <div class="row">
+        <div class="field-group col-12">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Czy powiadomienia mają być wysyłane?">
+                    <i class="fa fa-fw fa-bell-o"></i>
+                    Wysyłanie powiadomień
+                </legend>
+
+                <div class="row">
+                    <div class="col-6">
+                        <table style="width:80%;">
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[overview]" type="checkbox" {% if notify['overview'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie przeglądu</td>
+                            </tr>
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[oil]" type="checkbox" {% if notify['oil'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie wymiany oleju</td>
+                            </tr>
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[udt]" type="checkbox" {% if notify['udt'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie UDT</td>
+                            </tr>
+                            <tr>
+                                 <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[documents]" type="checkbox" {% if notify['documents'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie ważności dokumentów</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-6">
+                        <table style="width:80%;">
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[oc]" type="checkbox" {% if notify['oc'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie ubezpieczenia</td>
+                            </tr>
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[warranty]" type="checkbox" {% if notify['warranty'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie gwarancji</td>
+                            </tr>
+                            <tr>
+                                <td class="toggle">
+                                    <div class="checkbox-switch" data-propertyname="active">
+                                        <label>
+                                            <input name="notify[mechanic]" type="checkbox" {% if notify['mechanic'] == 'on' %}checked{% endif %}>
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </td>
+                                <td>O terminie wizyty u mechanika</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="field-group col-6 ">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Ile dni przed terminem ma zostać wysłane powiadomienie e-mail?">
+                    <i class="fa fa-fw fa-envelope-o"></i>
+                    Powiadomienia E-mail
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table style="width:80%;">
+                            <tr>
+                                <td>
+                                    <label for="notify_email_one" class="form-control-label">Pierwsze powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_email_one" name="notify[email_one]" required="required" class="form-control" value="{{ notify['email_one'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_email_one" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="notify_email_two" class="form-control-label">Drugie powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_email_two" name="notify[email_two]" required="required" class="form-control" value="{{ notify['email_two'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_email_two" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="notify_email_three" class="form-control-label">Trzecie powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_email_three" name="notify[email_three]" required="required" class="form-control" value="{{ notify['email_three'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_email_three" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+        <div class="field-group col-6 ">
+
+            <fieldset>
+                <legend class="with-icon" data-toggle="tooltip" data-placement="right" title="Ile dni przed terminem ma zostać wysłane powiadomienie sms?">
+                    <i class="fa fa-fw fa-comment-o"></i>
+                    Powiadomienia SMS
+                </legend>
+
+                <div class="row">
+                    <div class="col-12">
+                        <table style="width:80%;">
+                            <tr>
+                                <td>
+                                    <label for="notify_sms_one" class="form-control-label">Pierwsze powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_sms_one" name="notify[sms_one]" required="required" class="form-control" value="{{ notify['sms_one'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_sms_one" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="notify_sms_two" class="form-control-label">Drugie powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_sms_two" name="notify[sms_two]" required="required" class="form-control" value="{{ notify['sms_two'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_sms_two" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label for="notify_sms_three" class="form-control-label">Trzecie powiadomienie wyślij</label>
+                                </td>
+                                <td>
+                                    <div class="form-group  field-number">
+                                        <div class="form-widget">            
+                                            <input type="number" id="notify_sms_three" name="notify[sms_three]" required="required" class="form-control" value="{{ notify['sms_three'] }}" style="width:50px;"/>  
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <label for="notify_sms_three" class="form-control-label">dni przed terminem.</label>
+                                </td>
+                            </tr>
+                        </table>                   
+
+                    </div>
+                </div>
+            </fieldset>
+        </div>
+    </div>
+{% endblock %}
+
+{% block content_footer %}
+    <input type="hidden" id="notify__token" name="notify[_token]" value="8EvNsH1SmCcSO8Cowt_0Hu83hyCwAmtdvQq7CuCWAcg" />
+        <div class="form-actions">        
+            <button type="submit" class="btn btn-primary action-save" data-toggle="tooltip" data-placement="top" title="Kliknij i zapisz zmiany.">
+                <span class="btn-label">Zapisz zmiany</span>
+            </button>
+        </div>
+</form>
+{% endblock %}

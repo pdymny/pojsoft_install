@@ -1,0 +1,30 @@
+pack:
+    name: Mini
+    deadline: 15.12.2020
+    acounts: 5
+    vehicles: 10
+    drivers: 10
+    division: 0
+data:
+    name: DymCode
+    street: 'Janinowej 15'
+    code: 56-00
+    city: Zadupie
+    nip: '4643574'
+    regon: '34525'
+    email: '123'
+    phone: '123'
+notify:
+    email_one: '14'
+    email_two: '7'
+    email_three: '3'
+    sms_one: '14'
+    sms_two: '7'
+    sms_three: '3'
+    overview: 'on'
+    oil: 'on'
+    udt: 'on'
+    documents: 'on'
+    oc: 'on'
+    warranty: 'on'
+    mechanic: 'on'
